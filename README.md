@@ -2,4 +2,7 @@
 The work group repo for MLAI Hack 23
 Team Members:
 
-Lachlan Costigan
+Daniel 
+Sadiah 
+Zac 
+Lachlan 
