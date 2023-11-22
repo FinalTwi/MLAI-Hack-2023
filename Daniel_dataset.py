@@ -18,6 +18,22 @@ def generate_features():
     }
     return features
 
+def new_generate_features():
+    features = {
+        'fuel_age': np.random.uniform(0, 30),
+        'wind_speed': np.random.normal(50, 25),
+        'temperature': np.random.normal(20, 10),
+        'humidity': np.random.normal(50, 20),
+        'fuel_moisture_content': np.random.normal(15, 7),
+        'slope': np.random.uniform(0, 45),
+        'surface_fuel_hazard': np.random.uniform(1, 10),
+        'near_surface_fuel_hazard': np.random.uniform(1, 10),
+        'near_surface_fuel_height': np.random.normal(50, 25),
+        'elevated_fuel_height': np.random.normal(100, 50),
+        'flame_height': np.random.normal(25, 12.5),
+    }
+    return features
+
 def bushfire_rate_of_spread(features):
     # This is a hypothetical function.
     rate = (
