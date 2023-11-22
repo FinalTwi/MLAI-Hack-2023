@@ -20,13 +20,13 @@ def generate_features():
 
 def new_generate_features():
     features = {
-        'fuel_age': np.random.uniform(0, 30),
-        'wind_speed': np.random.normal(50, 25),
-        'temperature': np.random.normal(20, 10),
-        'humidity': np.random.normal(50, 20),
-        'fuel_moisture_content': np.random.normal(15, 7),
-        'slope': np.random.uniform(0, 45),
-        'surface_fuel_hazard': np.random.uniform(1, 10),
+        U: np.random.uniform(0, 30),
+        V: np.random.normal(50, 25),
+        temperature_data: np.random.normal(20, 10),
+        vapor_pressure_deficit: np.random.normal(50, 20),
+        band4_value : np.random.normal(15, 7),
+        band3_value : np.random.uniform(0, 45),
+        band1_value : np.random.uniform(1, 10),
         'near_surface_fuel_hazard': np.random.uniform(1, 10),
         'near_surface_fuel_height': np.random.normal(50, 25),
         'elevated_fuel_height': np.random.normal(100, 50),
@@ -96,6 +96,71 @@ historical_percentile = 95
 heatwave_indicator = identify_heatwaves(temperature_data, historical_percentile)
 
 print("Heatwave Indicator:", heatwave_indicator)
+
+def calculate_dead_fuel_moisture(vapor_pressure_deficit):
+    """
+    Calculate dead fuel moisture using the semi-mechanistic model.
+
+    Parameters:
+    - vapor_pressure_deficit: Vapor pressure deficit in kPa.
+
+    Returns:
+    - dead_fuel_moisture: Dead fuel moisture in percentage.
+    """
+
+    # Model parameters (constant)
+    a = 6.79
+    b = 27.43
+    c = -1.05
+
+    # Calculate dead fuel moisture using the model
+    dead_fuel_moisture = a + b * np.exp(c * vapor_pressure_deficit)
+
+    return dead_fuel_moisture
+
+# Example usage
+vapor_pressure_deficit = 1.5
+dead_fuel_moisture = calculate_dead_fuel_moisture(vapor_pressure_deficit)
+print("Dead Fuel Moisture (%):", dead_fuel_moisture)
+
+import numpy as np
+
+def calculate_VARI(band4, band1, band3):
+    """
+    Calculate the Visible Atmospherically Resistant Index (VARI).
+
+    Parameters:
+    - band4, band1, band3: Values for specific bands.
+
+    Returns:
+    - VARI: Visible Atmospherically Resistant Index.
+    """
+    return (band4 - band1) / (band4 + band1 - band3)
+
+def calculate_live_fuel_moisture(VARI):
+    """
+    Calculate live fuel moisture using the provided constants.
+
+    Parameters:
+    - VARI: Visible Atmospherically Resistant Index.
+
+    Returns:
+    - Live FM: Live fuel moisture in percentage.
+    """
+    A = 52.51
+    B = 1.36
+    return A * np.exp(B * VARI)
+
+# Example usage
+band4_value = 0.8
+band1_value = 0.6
+band3_value = 0.5
+
+VARI = calculate_VARI(band4_value, band1_value, band3_value)
+live_fuel_moisture = calculate_live_fuel_moisture(VARI)
+
+print("VARI:", VARI)
+print("Live Fuel Moisture (%):", live_fuel_moisture)
 
 
 def bushfire_rate_of_spread(features):
